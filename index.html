@@ -1,10 +1,449 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>HEMANG.ONLINE</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hemang — analytics &amp; comedy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,500;1,6..72,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root{
+  --paper:#E8E7E0;
+  --paper-2:#DEDDD5;
+  --ink:#16181C;
+  --ink-soft:#4A4E56;
+  --slate:#2F5D62;
+  --pink:#C2255C;
+  --rule:rgba(22,24,28,.16);
+  --display:"Bricolage Grotesque",system-ui,sans-serif;
+  --body:"Newsreader",Georgia,serif;
+  --mono:"JetBrains Mono",ui-monospace,monospace;
+  --pad:clamp(1.25rem,5vw,4.5rem);
+  --maxw:1180px;
+}
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{
+  margin:0;background:var(--paper);color:var(--ink);
+  font-family:var(--body);font-size:clamp(1rem,.97rem + .2vw,1.09rem);
+  line-height:1.62;font-weight:300;
+}
+::selection{background:var(--pink);color:var(--paper)}
+a{color:inherit}
+:focus-visible{outline:2px solid var(--pink);outline-offset:3px}
+
+/* ---------- shell ---------- */
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad)}
+
+.topbar{
+  position:sticky;top:0;z-index:50;background:var(--paper);
+  border-bottom:1px solid var(--rule);
+}
+.topbar__in{
+  max-width:var(--maxw);margin:0 auto;padding:.85rem var(--pad);
+  display:flex;align-items:baseline;justify-content:space-between;gap:1rem;flex-wrap:wrap;
+}
+.mark{
+  font-family:var(--display);font-weight:800;font-size:1.05rem;
+  letter-spacing:-.02em;text-decoration:none;
+}
+.mark span{color:var(--pink)}
+.nav{display:flex;gap:.35rem;flex-wrap:wrap}
+.nav a{
+  font-family:var(--mono);font-size:.72rem;letter-spacing:.09em;text-transform:uppercase;
+  text-decoration:none;color:var(--ink-soft);padding:.35rem .5rem;border-radius:2px;
+  transition:color .18s ease,background .18s ease;
+}
+.nav a:hover{color:var(--ink);background:var(--paper-2)}
+.nav a[aria-current="page"]{color:var(--ink)}
+.nav a[aria-current="page"]::before{content:"[";color:var(--pink);margin-right:.15em}
+.nav a[aria-current="page"]::after{content:"]";color:var(--pink);margin-left:.15em}
+
+/* ---------- shared type ---------- */
+.eyebrow{
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;
+  color:var(--ink-soft);margin:0 0 1.1rem;
+}
+.h-sec{
+  font-family:var(--display);font-weight:800;letter-spacing:-.025em;line-height:1.02;
+  font-size:clamp(2rem,1.3rem + 3vw,3.1rem);margin:0 0 1.4rem;
+}
+.lede{font-size:clamp(1.1rem,1rem + .5vw,1.35rem);max-width:40ch;color:var(--ink)}
+.rule{height:1px;background:var(--rule);border:0;margin:0}
+
+/* the annotation — the signature device */
+.note{
+  font-family:var(--mono);font-size:.76rem;line-height:1.55;letter-spacing:.005em;
+  color:var(--ink-soft);
+}
+.note::before{content:"[";color:var(--pink);padding-right:.1em}
+.note::after{content:"]";color:var(--pink);padding-left:.1em}
+.note--slate::before,.note--slate::after{color:var(--slate)}
+.note--todo{color:var(--pink);font-weight:500}
+
+/* ---------- pages ---------- */
+.page{display:none;animation:rise .45s cubic-bezier(.2,.7,.3,1) both}
+.page.is-on{display:block}
+@keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ---------- hero ---------- */
+.hero{padding:clamp(3rem,9vw,7rem) 0 clamp(2.5rem,6vw,4.5rem)}
+.hero__name{
+  font-family:var(--display);font-weight:800;letter-spacing:-.045em;line-height:.86;
+  font-size:clamp(4rem,16vw,11rem);margin:0 0 clamp(1.5rem,4vw,2.5rem);
+  text-transform:uppercase;
+}
+.hero__name em{font-style:normal;color:var(--pink)}
+.hero__lines{display:grid;gap:.55rem;margin-bottom:clamp(1.75rem,4vw,2.5rem)}
+.hero__line{
+  display:flex;align-items:baseline;gap:.75rem;
+  font-size:clamp(1.15rem,1rem + .7vw,1.55rem);font-weight:400;
+}
+.dot{width:.55rem;height:.55rem;border-radius:50%;flex:none;transform:translateY(-.15em)}
+.dot--slate{background:var(--slate)}
+.dot--pink{background:var(--pink)}
+.hero__note{max-width:52ch;font-size:.82rem}
+
+.reveal{opacity:0;animation:fade .7s ease forwards}
+.reveal--1{animation-delay:.15s}
+.reveal--2{animation-delay:.3s}
+.reveal--3{animation-delay:.45s}
+.reveal--4{animation-delay:.6s}
+@keyframes fade{to{opacity:1}}
+
+/* ---------- track cards ---------- */
+.tracks{display:grid;gap:1px;background:var(--rule);border-top:1px solid var(--rule);border-bottom:1px solid var(--rule)}
+@media(min-width:820px){.tracks{grid-template-columns:1fr 1fr}}
+.track{background:var(--paper);padding:clamp(1.75rem,4vw,2.75rem) 0;position:relative}
+@media(min-width:820px){
+  .track{padding-left:clamp(1.5rem,3vw,2.5rem);padding-right:clamp(1.5rem,3vw,2.5rem)}
+  .track:first-child{padding-left:0}
+  .track:last-child{padding-right:0}
+}
+.track__k{font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;margin:0 0 .9rem}
+.track--data .track__k{color:var(--slate)}
+.track--film .track__k{color:var(--pink)}
+.track__h{font-family:var(--display);font-weight:600;font-size:clamp(1.4rem,1.1rem + 1vw,1.9rem);letter-spacing:-.02em;line-height:1.1;margin:0 0 .8rem}
+.track__p{margin:0 0 1.2rem;color:var(--ink-soft);max-width:38ch}
+.track__list{list-style:none;padding:0;margin:0;display:flex;flex-wrap:wrap;gap:.4rem}
+.track__list li{font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;text-transform:uppercase;padding:.28rem .5rem;background:var(--paper-2);border-radius:2px}
+
+/* ---------- entries with marginalia ---------- */
+.entries{display:grid;gap:0}
+.entry{
+  display:grid;gap:.5rem 2.5rem;padding:clamp(1.6rem,3.5vw,2.4rem) 0;
+  border-bottom:1px solid var(--rule);
+}
+@media(min-width:900px){
+  .entry{grid-template-columns:minmax(0,1fr) 15rem;align-items:start}
+  .entry__margin{grid-column:2;grid-row:1 / span 3;padding-top:.35rem}
+}
+.entry__head{display:flex;flex-wrap:wrap;align-items:baseline;gap:.5rem .9rem}
+.entry__role{font-family:var(--display);font-weight:600;font-size:clamp(1.25rem,1.05rem + .7vw,1.65rem);letter-spacing:-.02em;margin:0;line-height:1.15}
+.entry__org{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase}
+.entry[data-track="data"] .entry__org{color:var(--slate)}
+.entry[data-track="creative"] .entry__org{color:var(--pink)}
+.entry__when{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;color:var(--ink-soft);margin-left:auto}
+.entry__body{margin:.7rem 0 0;padding:0;list-style:none;display:grid;gap:.45rem;max-width:62ch}
+.entry__body li{position:relative;padding-left:1.1rem}
+.entry__body li::before{content:"—";position:absolute;left:0;color:var(--rule);color:rgba(22,24,28,.35)}
+
+.filters{display:flex;gap:.4rem;flex-wrap:wrap;margin:0 0 .5rem}
+.filter{
+  font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;text-transform:uppercase;
+  background:none;border:1px solid var(--rule);color:var(--ink-soft);
+  padding:.45rem .8rem;border-radius:2px;cursor:pointer;transition:all .18s ease;
+}
+.filter:hover{border-color:var(--ink);color:var(--ink)}
+.filter[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.entry.is-hidden{display:none}
+
+/* ---------- about ---------- */
+.prose{max-width:60ch}
+.prose p{margin:0 0 1.15rem}
+.prose p:last-child{margin-bottom:0}
+.two{display:grid;gap:clamp(2rem,5vw,4rem)}
+@media(min-width:900px){.two{grid-template-columns:1fr 18rem}}
+.stack{display:grid;gap:1.6rem}
+.stack__k{font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 .5rem}
+.stack__v{margin:0;font-size:.95rem}
+
+/* ---------- contact ---------- */
+.big-link{
+  font-family:var(--display);font-weight:800;letter-spacing:-.035em;line-height:1;
+  font-size:clamp(2rem,1rem + 6vw,4.5rem);text-decoration:none;display:inline-block;
+  border-bottom:3px solid transparent;transition:border-color .2s ease,color .2s ease;
+}
+.big-link:hover{color:var(--pink);border-bottom-color:var(--pink)}
+.links{display:grid;gap:.15rem;margin-top:2.5rem}
+.links a{
+  font-family:var(--mono);font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;
+  text-decoration:none;padding:.7rem 0;border-bottom:1px solid var(--rule);
+  display:flex;justify-content:space-between;gap:1rem;transition:color .18s ease;
+}
+.links a:hover{color:var(--pink)}
+.links a span:last-child{color:var(--ink-soft)}
+
+.sec{padding:clamp(2.75rem,6vw,4.75rem) 0}
+.foot{border-top:1px solid var(--rule);padding:1.5rem 0 2.5rem}
+.foot p{margin:0;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;color:var(--ink-soft)}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .reveal{opacity:1}
+}
+</style>
 </head>
 <body>
-    <h1>hemang.online</h1>
-    <p>hemang is online</p>
+
+<header class="topbar">
+  <div class="topbar__in">
+    <a class="mark" href="#/">HEMANG<span>.</span></a>
+    <nav class="nav" aria-label="Main">
+      <a href="#/">Home</a>
+      <a href="#/work">Work</a>
+      <a href="#/about">About</a>
+      <a href="#/contact">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+<!-- ============ HOME ============ -->
+<section class="page" id="p-home" aria-label="Home">
+  <div class="wrap hero">
+    <h1 class="hero__name reveal reveal--1">Hemang<br><em>[surname]</em></h1>
+    <div class="hero__lines">
+      <p class="hero__line reveal reveal--2"><span class="dot dot--slate"></span> Analytics engineer. SQL, Snowflake, Power BI.</p>
+      <p class="hero__line reveal reveal--3"><span class="dot dot--pink"></span> Stand-up, long-form improv, documentary film.</p>
+    </div>
+    <p class="note hero__note reveal reveal--4">Both of these are true. Historically, only one of them has paid for the other.</p>
+  </div>
+
+  <div class="wrap">
+    <div class="tracks">
+      <article class="track track--data">
+        <p class="track__k">Track one</p>
+        <h2 class="track__h">Turning hospital data into things people actually open</h2>
+        <p class="track__p">Nine years across capital markets and healthcare, most recently building the reporting layer on Epic Clarity data in Snowflake.</p>
+        <ul class="track__list">
+          <li>SQL</li><li>Snowflake</li><li>Power BI</li><li>DAX</li><li>dbt</li><li>Python</li><li>Dimensional modeling</li>
+        </ul>
+      </article>
+      <article class="track track--film">
+        <p class="track__k">Track two</p>
+        <h2 class="track__h">Writing dry things and occasionally filming them</h2>
+        <p class="track__p">Stand-up and long-form improv out of Boston, plus documentary and narrative shorts. The house style is minimal and deadpan.</p>
+        <ul class="track__list">
+          <li>Stand-up</li><li>Improv</li><li>Documentary</li><li>Screenwriting</li><li>Directing</li><li>Editing</li>
+        </ul>
+      </article>
+    </div>
+  </div>
+
+  <div class="wrap sec">
+    <p class="eyebrow">Currently</p>
+    <p class="lede">Open to analytics and data platform roles. Still doing shows.</p>
+  </div>
+</section>
+
+<!-- ============ WORK ============ -->
+<section class="page" id="p-work" aria-label="Work">
+  <div class="wrap sec">
+    <p class="eyebrow">Work</p>
+    <h2 class="h-sec">Everything, in reverse</h2>
+    <div class="filters" role="group" aria-label="Filter work">
+      <button class="filter" data-filter="all" aria-pressed="true">All</button>
+      <button class="filter" data-filter="data" aria-pressed="false">Data</button>
+      <button class="filter" data-filter="creative" aria-pressed="false">Creative</button>
+    </div>
+  </div>
+
+  <div class="wrap">
+    <div class="entries" id="entries">
+
+      <article class="entry" data-track="data">
+        <div class="entry__head">
+          <h3 class="entry__role">BI Developer</h3>
+          <p class="entry__org">Beth Israel Lahey Health</p>
+          <p class="entry__when">[dates]</p>
+        </div>
+        <ul class="entry__body">
+          <li>Built Power BI dashboards on Epic Clarity data warehoused in Snowflake.</li>
+          <li>Designed star schemas and wrote the SQL transformations feeding them.</li>
+          <li>Scoped a migration to Microsoft Fabric, including an evaluation of dbt.</li>
+        </ul>
+        <p class="note note--slate entry__margin">Epic Clarity is neither.</p>
+      </article>
+
+      <article class="entry" data-track="data">
+        <div class="entry__head">
+          <h3 class="entry__role">Data Technology Analyst</h3>
+          <p class="entry__org">AQR Capital Management</p>
+          <p class="entry__when">[dates]</p>
+        </div>
+        <ul class="entry__body">
+          <li class="note note--todo">Bullets pending — pull these from the resume.</li>
+        </ul>
+        <p class="note note--slate entry__margin">Quantitative, in the sense that there were numbers.</p>
+      </article>
+
+      <article class="entry" data-track="creative">
+        <div class="entry__head">
+          <h3 class="entry__role">Director &amp; Editor — <em>Living the Dream</em></h3>
+          <p class="entry__org">Documentary</p>
+          <p class="entry__when">[year]</p>
+        </div>
+        <ul class="entry__body">
+          <li class="note note--todo">Logline, runtime, festivals — needed.</li>
+        </ul>
+        <p class="note entry__margin">The dream, as it turns out, is ongoing.</p>
+      </article>
+
+      <article class="entry" data-track="creative">
+        <div class="entry__head">
+          <h3 class="entry__role">Stand-up &amp; long-form improv</h3>
+          <p class="entry__org">Improv Asylum · UCB</p>
+          <p class="entry__when">[years]</p>
+        </div>
+        <ul class="entry__body">
+          <li>Trained in long-form at Improv Asylum and UCB; performing regularly in the Boston area.</li>
+          <li class="note note--todo">Add: troupe name, notable rooms, festivals.</li>
+        </ul>
+      </article>
+
+      <article class="entry" data-track="creative">
+        <div class="entry__head">
+          <h3 class="entry__role">Narrative shorts</h3>
+          <p class="entry__org">Writer / Director</p>
+          <p class="entry__when">[years]</p>
+        </div>
+        <ul class="entry__body">
+          <li class="note note--todo">Titles and one line each.</li>
+        </ul>
+      </article>
+
+      <article class="entry" data-track="data">
+        <div class="entry__head">
+          <h3 class="entry__role">Software Engineering Intern</h3>
+          <p class="entry__org">NetScout · TraceLight</p>
+          <p class="entry__when">[years]</p>
+        </div>
+        <ul class="entry__body">
+          <li class="note note--todo">Combine or split these — your call.</li>
+        </ul>
+      </article>
+
+      <article class="entry" data-track="data">
+        <div class="entry__head">
+          <h3 class="entry__role">B.A., Computer Science &amp; Literary Arts</h3>
+          <p class="entry__org">Brown University</p>
+          <p class="entry__when">2017</p>
+        </div>
+        <ul class="entry__body">
+          <li>Dual concentration.</li>
+        </ul>
+        <p class="note entry__margin">This site is just the degree, restated.</p>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- ============ ABOUT ============ -->
+<section class="page" id="p-about" aria-label="About">
+  <div class="wrap sec">
+    <p class="eyebrow">About</p>
+    <h2 class="h-sec">The short version</h2>
+    <div class="two">
+      <div class="prose">
+        <p>I build the layer between a database and the person who has to make a decision from it. In practice that has meant dimensional models, SQL transformations, and Power BI dashboards — most recently on Epic Clarity data at a large hospital system, and before that on the technology side at a quantitative asset manager.</p>
+        <p>The other half of the résumé is comedy. I do stand-up and long-form improv, and I write and direct — a documentary, some narrative shorts. My prose style is dry to the point of being a bit of a problem; I call it <em>sic.</em></p>
+        <p class="note note--todo">Replace this with your own paragraphs. This is my approximation, not your voice.</p>
+      </div>
+      <aside class="stack">
+        <div>
+          <p class="stack__k">Based in</p>
+          <p class="stack__v">Boston area, Massachusetts</p>
+        </div>
+        <div>
+          <p class="stack__k">Data</p>
+          <p class="stack__v">SQL · Snowflake · Power BI · DAX · dbt · Python · Microsoft Fabric · dimensional modeling</p>
+        </div>
+        <div>
+          <p class="stack__k">Creative</p>
+          <p class="stack__v">Stand-up · long-form improv · documentary · narrative shorts · screenwriting</p>
+        </div>
+        <div>
+          <p class="stack__k">Education</p>
+          <p class="stack__v">Brown University, B.A. Computer Science &amp; Literary Arts, 2017</p>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CONTACT ============ -->
+<section class="page" id="p-contact" aria-label="Contact">
+  <div class="wrap sec">
+    <p class="eyebrow">Contact</p>
+    <a class="big-link" href="mailto:you@example.com">you@example.com</a>
+    <p class="note" style="margin-top:1.25rem">Swap in the real address. Also decide whether it goes here or behind a form.</p>
+    <div class="links">
+      <a href="#"><span>LinkedIn</span><span>→</span></a>
+      <a href="#"><span>GitHub</span><span>→</span></a>
+      <a href="#"><span>Résumé (PDF)</span><span>→</span></a>
+      <a href="#"><span>Instagram</span><span>→</span></a>
+      <a href="#"><span>Vimeo / YouTube</span><span>→</span></a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap"><p>© <span id="yr"></span> Hemang — built as a scaffold, content pending</p></div>
+</footer>
+
+<script>
+(function(){
+  var routes = {"#/":"p-home","#/work":"p-work","#/about":"p-about","#/contact":"p-contact"};
+
+  function render(){
+    var hash = location.hash || "#/";
+    var id = routes[hash] || "p-home";
+    document.querySelectorAll(".page").forEach(function(p){
+      p.classList.toggle("is-on", p.id === id);
+    });
+    document.querySelectorAll(".nav a").forEach(function(a){
+      if(a.getAttribute("href") === hash || (!routes[hash] && a.getAttribute("href") === "#/")){
+        a.setAttribute("aria-current","page");
+      } else {
+        a.removeAttribute("aria-current");
+      }
+    });
+    window.scrollTo(0,0);
+  }
+
+  window.addEventListener("hashchange", render);
+
+  document.querySelectorAll(".filter").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var f = btn.dataset.filter;
+      document.querySelectorAll(".filter").forEach(function(b){
+        b.setAttribute("aria-pressed", String(b === btn));
+      });
+      document.querySelectorAll(".entry").forEach(function(e){
+        e.classList.toggle("is-hidden", f !== "all" && e.dataset.track !== f);
+      });
+    });
+  });
+
+  document.getElementById("yr").textContent = new Date().getFullYear();
+  render();
+})();
+</script>
 </body>
 </html>
